@@ -37,3 +37,24 @@ export const unauthenticated = shopify.unauthenticated;
 export const login = shopify.login;
 export const registerWebhooks = shopify.registerWebhooks;
 export const sessionStorage = shopify.sessionStorage;
+
+
+// import { DeliveryMethod, shopifyApp } from "@shopify/shopify-app-remix/server";
+
+// const shopify = shopifyApp({
+//   webhooks: {
+//     PRODUCTS_CREATE: {
+//       deliveryMethod: DeliveryMethod.Http,
+//       callbackUrl: "/webhooks/products/create",
+//     },
+//   },
+//   hooks: {
+//     afterAuth: async ({ session }) => {
+//       // Register webhooks for the shop
+//       // In this example, every shop will have these webhooks
+//       // You could wrap this in some custom shop specific conditional logic if needed
+//       shopify.registerWebhooks({ session });
+//     },
+//   },
+//   // ...etc
+// });
