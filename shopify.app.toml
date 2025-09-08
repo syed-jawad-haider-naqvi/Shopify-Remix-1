@@ -2,7 +2,7 @@
 
 client_id = "ebb45e56aa8f68ccab5bb2f0ec0bde79"
 name = "first-scaffold-remix-app"
-application_url = "https://bulgarian-ranger-qualifying-combining.trycloudflare.com"
+application_url = "https://normally-established-badge-carter.trycloudflare.com"
 embedded = true
 handle = "first-scaffold-remix-app"
 
@@ -36,7 +36,7 @@ api_version = "2025-07"
 scopes = "write_products,write_orders,read_orders"
 
 [auth]
-redirect_urls = ["https://bulgarian-ranger-qualifying-combining.trycloudflare.com/auth/callback", "https://bulgarian-ranger-qualifying-combining.trycloudflare.com/auth/shopify/callback", "https://bulgarian-ranger-qualifying-combining.trycloudflare.com/api/auth/callback"]
+redirect_urls = ["https://normally-established-badge-carter.trycloudflare.com/auth/callback", "https://normally-established-badge-carter.trycloudflare.com/auth/shopify/callback", "https://normally-established-badge-carter.trycloudflare.com/api/auth/callback"]
 
 [pos]
 embedded = false

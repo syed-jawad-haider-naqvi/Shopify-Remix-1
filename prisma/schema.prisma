@@ -9,18 +9,17 @@ generator client {
 // enough when changing adapters.
 // See https://www.prisma.io/docs/orm/reference/prisma-schema-reference#string for more information
 datasource db {
-  provider = "sqlite"
-  url      = "file:dev.sqlite"
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
 }
-
 model Session {
-  id            String    @id
-  shop          String
+  id            String    @id @map("_id") @db.ObjectId // MongoDB requires an ID field, Mapped to Object ID
+  shop          String    @unique // The shop domain (unique)
   state         String
   isOnline      Boolean   @default(false)
   scope         String?
   expires       DateTime?
-  accessToken   String
+  accessToken   String    @unique
   userId        BigInt?
   firstName     String?
   lastName      String?
@@ -29,4 +28,20 @@ model Session {
   locale        String?
   collaborator  Boolean?  @default(false)
   emailVerified Boolean?  @default(false)
+}
+
+model Product {
+  id          String @id @map("_id") @db.ObjectId
+  shopifyId   String @unique
+  title       String
+  price       Float
+  createdAt   DateTime @default(now()) // Automatically set to the current date and time when created
+}
+
+model Order {
+  id          String @id @map("_id") @db.ObjectId
+  shopifyId   String @unique
+  name        String
+  totalPrice  Float
+  createdAt   DateTime @default(now())
 }
