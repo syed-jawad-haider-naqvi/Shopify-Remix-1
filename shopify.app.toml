@@ -2,7 +2,7 @@
 
 client_id = "ebb45e56aa8f68ccab5bb2f0ec0bde79"
 name = "first-scaffold-remix-app"
-application_url = "https://normally-established-badge-carter.trycloudflare.com"
+application_url = "https://hormone-owen-compromise-moderate.trycloudflare.com"
 embedded = true
 handle = "first-scaffold-remix-app"
 
@@ -36,7 +36,7 @@ api_version = "2025-07"
 scopes = "write_products,write_orders,read_orders"
 
 [auth]
-redirect_urls = ["https://normally-established-badge-carter.trycloudflare.com/auth/callback", "https://normally-established-badge-carter.trycloudflare.com/auth/shopify/callback", "https://normally-established-badge-carter.trycloudflare.com/api/auth/callback"]
+redirect_urls = ["https://hormone-owen-compromise-moderate.trycloudflare.com/auth/callback", "https://hormone-owen-compromise-moderate.trycloudflare.com/auth/shopify/callback", "https://hormone-owen-compromise-moderate.trycloudflare.com/api/auth/callback"]
 
 [pos]
 embedded = false

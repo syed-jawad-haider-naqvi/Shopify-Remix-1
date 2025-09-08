@@ -3,12 +3,4 @@ roles = ["frontend", "backend"]
 webhooks_path = "/webhooks/app/uninstalled"
 
 [commands]
-predev = "npx prisma generate"
-dev = "npx prisma db push && npm exec remix vite:dev"
-# dev = "npx prisma migrate deploy && npm exec remix vite:dev"
-
-#Prisma's workflow for relational databases and MongoDB is different.
-
-# Relational Databases (e.g., SQLite, PostgreSQL): These databases use a strict, predefined table structure. Changes to the schema require a migration to be applied. A migration is a set of explicit SQL commands that modifies the database. The command npx prisma migrate deploy runs these migrations to update the database.
-
-# NoSQL Databases (e.g., MongoDB): These databases are schemaless or have a flexible schema. You don't need to run a series of SQL migrations to change the structure. Instead, Prisma uses npx prisma db push to directly sync your schema.prisma file with the database. This command inspects your schema and creates the necessary collections and fields on the fly without generating migration files.
+dev = "npm exec remix vite:dev"
