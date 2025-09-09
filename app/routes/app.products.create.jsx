@@ -1,16 +1,16 @@
 import { json, redirect } from "@remix-run/node";
-import { useActionData, useNavigation } from "@remix-run/react";
+import { Form, useActionData, useNavigation } from "@remix-run/react";
 import {
   Page,
   Layout,
   Text,
-  Form,
   TextField,
   Button,
 } from "@shopify/polaris";
 import { BlockStack as VerticalStack } from '@shopify/polaris';
 import { authenticate } from "../shopify.server";
 import db from "../mongo.server";
+import { useState } from 'react';
 
 // The action function runs on the server when the form is submitted
 export async function action({ request }) {
@@ -23,14 +23,21 @@ export async function action({ request }) {
     return json({ errors: { title: "Title is required", price: "Price is required" } });
   }
 
-  // Use the admin client to create a product in Shopify via GraphQL
-  const productResponse = await admin.graphql(
+  // Step 1: Create the product with just the title.
+  const createProductResponse = await admin.graphql(
     `#graphql
       mutation productCreate($product: ProductCreateInput!) {
         productCreate(product: $product) {
           product {
             id
             title
+            variants(first: 1) {
+              edges {
+                node {
+                  id
+                }
+              }
+            }
           }
           userErrors {
             field
@@ -41,19 +48,18 @@ export async function action({ request }) {
     `,
     {
       variables: {
-        input: {
+        product: {
           title: title,
-          variants: [{ price: price }],
         },
       },
     }
   );
 
-  const productData = await productResponse.json();
-  const newProduct = productData.data.productCreate.product;
-  const userErrors = productData.data.productCreate.userErrors;
+  const createProductData = await createProductResponse.json();
+  const newProduct = createProductData.data.productCreate.product;
+  const userErrors = createProductData.data.productCreate.userErrors;
 
-  if (userErrors.length > 0) {
+  if (userErrors && userErrors.length > 0) {
     const errors = userErrors.reduce((acc, error) => {
       acc[error.field[1]] = error.message;
       return acc;
@@ -61,21 +67,60 @@ export async function action({ request }) {
     return json({ errors });
   }
 
-  if (newProduct) {
-    // Save the new product's details to MongoDB using Prisma
-    await db.collection("products").insertOne({
-      shopifyId: newProduct.id,
-      title: newProduct.title,
-      price: price,
-      createdAt: new Date(),
-    });
-    
-    // Redirect to the app's homepage after successful creation
-    return redirect("/app");
+  // Get the ID of the default variant that was just created.
+  const defaultVariantId = newProduct.variants.edges[0].node.id;
+
+  // Step 2: Update the default variant's price.
+  const updateVariantResponse = await admin.graphql(
+    `#graphql
+      mutation productVariantsBulkUpdate($productId: ID!, $variants: [ProductVariantsBulkInput!]!) {
+        productVariantsBulkUpdate(productId: $productId, variants: $variants) {
+          productVariants {
+            id
+            price
+          }
+          userErrors {
+            field
+            message
+          }
+        }
+      }
+    `,
+    {
+      variables: {
+        productId: newProduct.id,
+        variants: [
+          {
+            id: defaultVariantId,
+            price: price,
+          },
+        ],
+      },
+    }
+  );
+
+  const updateVariantData = await updateVariantResponse.json();
+  const updateErrors = updateVariantData.data.productVariantsBulkUpdate.userErrors;
+
+  if (updateErrors && updateErrors.length > 0) {
+    const errors = updateErrors.reduce((acc, error) => {
+      acc[error.field[1]] = error.message;
+      return acc;
+    }, {});
+    return json({ errors });
   }
 
-  return json({ errors: { general: "Something went wrong" } });
+  // Save to MongoDB and redirect after both API calls are successful
+  await db.collection("products").insertOne({
+    shopifyId: newProduct.id,
+    title: newProduct.title,
+    price: price,
+    createdAt: new Date(),
+  });
+    
+  return redirect("/app");
 }
+
 
 // The loader function runs on the server to get data for the page.
 // For a creation page, it's often empty or just handles authentication.
@@ -86,6 +131,8 @@ export async function loader({ request }) {
 
 // The default component is the page's UI
 export default function ProductCreatePage() {
+  const [title, setTitle] = useState("");
+  const [price, setPrice] = useState("");
   const navigation = useNavigation();
   const actionData = useActionData();
   const isSubmitting = navigation.state === "submitting";
@@ -104,6 +151,8 @@ export default function ProductCreatePage() {
                   id="title"
                   name="title"
                   label="Product Title"
+                  value={title}
+                  onChange={setTitle}
                   helpText="Enter the name of the product"
                   error={actionData?.errors?.title}
                 />
@@ -112,6 +161,8 @@ export default function ProductCreatePage() {
                   name="price"
                   type="number"
                   label="Product Price"
+                  value={price}
+                  onChange={setPrice}
                   helpText="Enter the price of the product"
                   error={actionData?.errors?.price}
                 />

@@ -1,14 +1,14 @@
 import { json, redirect } from "@remix-run/node";
-import { useActionData, useNavigation } from "@remix-run/react";
+import { Form, useActionData, useNavigation } from "@remix-run/react";
 import {
   Page,
   Layout,
   Text,
-  Form,
   TextField,
   Button,
 } from "@shopify/polaris";
 import { BlockStack as VerticalStack } from '@shopify/polaris';
+import { useState } from 'react';
 
 import { authenticate } from "../shopify.server";
 import db from "../mongo.server";
@@ -97,6 +97,9 @@ export async function loader({ request }) {
 
 // The default component is the page's UI
 export default function OrderCreatePage() {
+  const [orderName, setOrderName] = useState("");
+  const [totalPrice, setTotalPrice] = useState("");
+
   const navigation = useNavigation();
   const actionData = useActionData();
   const isSubmitting = navigation.state === "submitting";
@@ -117,12 +120,16 @@ export default function OrderCreatePage() {
                   label="Order Name"
                   helpText="Enter a name for the order"
                   error={actionData?.errors?.orderName}
+                  value={orderName}
+                  onChange={setOrderName}
                 />
                 <TextField
                   id="totalPrice"
                   name="totalPrice"
                   type="number"
                   label="Total Price"
+                  value={totalPrice}
+                  onChange={setTotalPrice}
                   helpText="Enter the total price of the order"
                   error={actionData?.errors?.totalPrice}
                 />
