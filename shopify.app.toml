@@ -2,7 +2,7 @@
 
 client_id = "ebb45e56aa8f68ccab5bb2f0ec0bde79"
 name = "first-scaffold-remix-app"
-application_url = "https://percent-patricia-returning-humanitarian.trycloudflare.com"
+application_url = "https://streams-breaks-technician-speeds.trycloudflare.com"
 embedded = true
 handle = "first-scaffold-remix-app"
 
@@ -33,10 +33,10 @@ api_version = "2025-07"
 
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
-scopes = "write_products,write_orders,read_orders"
+scopes = "write_products,write_orders,read_orders,write_inventory,read_locations"
 
 [auth]
-redirect_urls = ["https://percent-patricia-returning-humanitarian.trycloudflare.com/auth/callback", "https://percent-patricia-returning-humanitarian.trycloudflare.com/auth/shopify/callback", "https://percent-patricia-returning-humanitarian.trycloudflare.com/api/auth/callback"]
+redirect_urls = ["https://streams-breaks-technician-speeds.trycloudflare.com/auth/callback", "https://streams-breaks-technician-speeds.trycloudflare.com/auth/shopify/callback", "https://streams-breaks-technician-speeds.trycloudflare.com/api/auth/callback"]
 
 [pos]
 embedded = false

@@ -5,6 +5,9 @@ import {
   shopifyApp,
 } from "@shopify/shopify-app-remix/server";
 import { MongoDBSessionStorage } from "@shopify/shopify-app-session-storage-mongodb";
+import { DeliveryMethod, shopifyApp } from "@shopify/shopify-app-remix/server";
+
+console.log("APP_URL: ", process.env.SHOPIFY_APP_URL);
 
 const shopify = shopifyApp({
   apiKey: process.env.SHOPIFY_API_KEY,
@@ -13,10 +16,23 @@ const shopify = shopifyApp({
   scopes: process.env.SCOPES?.split(","),
   appUrl: process.env.SHOPIFY_APP_URL || "",
   authPathPrefix: "/auth",
-  sessionStorage: new MongoDBSessionStorage(process.env.DATABASE_URL),
+  sessionStorage: new MongoDBSessionStorage(process.env.DATABASE_URL, 'ShopifyScaffoldRemix1', {
+    sessionCollectionName: "sessions",
+  }),
   distribution: AppDistribution.AppStore,
-  webhooks:{
-    
+  webhooks: {
+    ORDERS_CREATE: {
+      deliveryMethod: DeliveryMethod.Http,
+      callbackUrl: "/webhooks/orders/create",
+    },
+  },
+  hooks: {
+    afterAuth: async ({ session }) => {
+      // Register webhooks for the shop
+      // In this example, every shop will have these webhooks
+      // You could wrap this in some custom shop specific conditional logic if needed
+      shopify.registerWebhooks({ session });
+    },
   },
   future: {
     unstable_newEmbeddedAuthStrategy: true,
@@ -38,7 +54,6 @@ export const registerWebhooks = shopify.registerWebhooks;
 export const sessionStorage = shopify.sessionStorage;
 
 
-// import { DeliveryMethod, shopifyApp } from "@shopify/shopify-app-remix/server";
 
 // const shopify = shopifyApp({
 //   webhooks: {
