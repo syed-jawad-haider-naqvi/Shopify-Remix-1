@@ -2,41 +2,39 @@
 
 client_id = "ebb45e56aa8f68ccab5bb2f0ec0bde79"
 name = "first-scaffold-remix-app"
-application_url = "https://representing-pharmaceuticals-functional-panel.trycloudflare.com"
+application_url = "https://sponsored-brazil-machines-productions.trycloudflare.com"
 embedded = true
 handle = "first-scaffold-remix-app"
 
 [build]
-include_config_on_deploy = true
 automatically_update_urls_on_dev = true
+include_config_on_deploy = true
 
 [webhooks]
 api_version = "2025-07"
+
+  [[webhooks.subscriptions]]
+  topics = [ "app/scopes_update" ]
+  uri = "/webhooks/app/scopes_update"
 
   [[webhooks.subscriptions]]
   topics = [ "app/uninstalled" ]
   uri = "/webhooks/app/uninstalled"
 
   [[webhooks.subscriptions]]
-  topics = [ "app/scopes_update" ]
-  uri = "/webhooks/app/scopes_update"
+  topics = [ "orders/create" ]
+  uri = "/webhooks/orders/create"
 
-#PRODUCT CREATION
   [[webhooks.subscriptions]]
   topics = [ "products/create" ]
   uri = "/webhooks/products/create"
 
-#ORDER CREATION
-  [[webhooks.subscriptions]]
-  topics = [ "orders/create" ]
-  uri = "/webhooks/orders/create"
-
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
-scopes = "write_products,write_orders,read_orders,write_inventory,read_locations"
+scopes = "read_locations,read_orders,write_inventory,write_orders,write_products"
 
 [auth]
-redirect_urls = ["https://representing-pharmaceuticals-functional-panel.trycloudflare.com/auth/callback", "https://representing-pharmaceuticals-functional-panel.trycloudflare.com/auth/shopify/callback", "https://representing-pharmaceuticals-functional-panel.trycloudflare.com/api/auth/callback"]
+redirect_urls = ["https://sponsored-brazil-machines-productions.trycloudflare.com/auth/callback", "https://sponsored-brazil-machines-productions.trycloudflare.com/auth/shopify/callback", "https://sponsored-brazil-machines-productions.trycloudflare.com/api/auth/callback"]
 
 [pos]
 embedded = false

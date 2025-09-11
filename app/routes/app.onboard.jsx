@@ -22,11 +22,36 @@ export async function action({ request }) {
                 }
             }
         `;
-        const shopResponse = await admin.graphql(shopQuery);
+         const locationQuery = `#graphql
+            query {
+                locations(first: 1) {
+                    edges {
+                        node {
+                            id
+                            name
+                            address {
+                                address1
+                                address2
+                                city
+                                countryCode
+                                phone
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+        
+        // Execute both queries in parallel for efficiency
+        const [shopResponse, locationResponse] = await Promise.all([
+            admin.graphql(shopQuery),
+            admin.graphql(locationQuery)
+        ]);
         const shopData = await shopResponse.json();
+        const locationData = await locationResponse.json();
 
-        if (!shopData?.data?.shop) {
-            throw new Error("Failed to retrieve shop data from Shopify.");
+        if (!shopData?.data?.shop || !locationData?.data?.locations?.edges?.length) {
+            throw new Error("Failed to retrieve essential data from Shopify.");
         }
 
         const { email, shopOwnerName, currencyCode } = shopData.data.shop;
@@ -35,9 +60,10 @@ export async function action({ request }) {
         // This is safe to use as a unique ID and is deterministic
         const realmName = shop.split('.')[0].replace(/-/g, '_');
 
-        // Extract first and last name from shop owner name
         let firstName = '';
         let lastName = '';
+        const locationNode = locationData.data.locations.edges[0].node;
+
         const nameParts = shopOwnerName?.split(/\s+/);
         if (nameParts?.length > 0) {
             firstName = nameParts[0];
@@ -112,6 +138,12 @@ export async function action({ request }) {
         // For simplicity, let's use the session.accessToken
         const accessToken = session.accessToken;
 
+         // Dynamically create the address string
+        const address = `${locationNode.address.address1 || ''} ${locationNode.address.address2 || ''}`.trim();
+        
+        // Extract the numerical ID from the Location GID
+        const channelLocationId = locationNode.id.split('/').pop();
+
         const onboardBrandPayload = {
             "name": `${shop.split('.')[0]} Test Brand`, // Generate a name from shop domain
             "company_code": accountId,
@@ -124,12 +156,12 @@ export async function action({ request }) {
             // For now, using hardcoded data as requested
             "locations": [
                 {
-                    "name": "Shop location test 21",
-                    "address": "Gulberg",
-                    "phone": "+923184948635",
-                    "city": "Lahore",
-                    "country": "PK",
-                    "channel_location_id": 72754430000
+                    "name": locationNode.name,
+                    "address": address,
+                    "phone": locationNode.address.phone,
+                    "city": locationNode.address.city,
+                    "country": locationNode.address.countryCode,
+                    "channel_location_id": channelLocationId
                 }
             ],
             "stores": [
