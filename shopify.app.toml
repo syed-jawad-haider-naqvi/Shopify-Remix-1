@@ -2,7 +2,7 @@
 
 client_id = "ebb45e56aa8f68ccab5bb2f0ec0bde79"
 name = "first-scaffold-remix-app"
-application_url = "https://sponsored-brazil-machines-productions.trycloudflare.com"
+application_url = "https://zope-cruises-cooperative-initiated.trycloudflare.com"
 embedded = true
 handle = "first-scaffold-remix-app"
 
@@ -34,7 +34,7 @@ api_version = "2025-07"
 scopes = "read_locations,read_orders,write_inventory,write_orders,write_products"
 
 [auth]
-redirect_urls = ["https://sponsored-brazil-machines-productions.trycloudflare.com/auth/callback", "https://sponsored-brazil-machines-productions.trycloudflare.com/auth/shopify/callback", "https://sponsored-brazil-machines-productions.trycloudflare.com/api/auth/callback"]
+redirect_urls = ["https://zope-cruises-cooperative-initiated.trycloudflare.com/auth/callback", "https://zope-cruises-cooperative-initiated.trycloudflare.com/auth/shopify/callback", "https://zope-cruises-cooperative-initiated.trycloudflare.com/api/auth/callback"]
 
 [pos]
 embedded = false

@@ -27,6 +27,7 @@ export default function App() {
         <Link to="/app/products/create">Create Product</Link>
         <Link to="/app/orders/create">Create Order</Link>
         <Link to="/app/onboard">Onbard Brand</Link>
+        <Link to="/app/reseller">Reseller Page</Link>
       </NavMenu>
       <Outlet />
     </AppProvider>
